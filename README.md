@@ -158,7 +158,6 @@ pandas
 numpy
 scikit-learn
 streamlit
-plotly
 pytest
 ```
 
