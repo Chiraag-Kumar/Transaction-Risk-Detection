@@ -47,7 +47,7 @@ def train_model(df, contamination=0.05, random_state=42):
 
     model.fit(X)
 
-    # Save training anomaly scores for risk-score comparison.
+    
     model.reference_scores_ = (
         -model.decision_function(X)
     )
@@ -69,13 +69,13 @@ def predict_anomalies(model, df):
 
     predictions = model.predict(X)
 
-    # Lower decision scores mean more unusual transactions.
+    
     anomaly_scores = -model.decision_function(X)
 
     result["anomaly_flag"] = predictions == -1
     result["anomaly_score"] = anomaly_scores
 
-    # Convert scores into a 0-100 percentile-based risk score.
+    
     reference = model.reference_scores_
 
     result["ml_risk_score"] = [

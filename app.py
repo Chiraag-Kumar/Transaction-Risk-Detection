@@ -39,8 +39,7 @@ def add_combined_risk(results):
         right=False,
     )
 
-    # A transaction is flagged if either detector identifies
-    # a concern or its combined score reaches 60.
+   
     results["review_flag"] = (
         results["rule_flag"].astype(bool)
         | results["anomaly_flag"].astype(bool)
@@ -172,15 +171,15 @@ if has_labels:
             "The test records are held out from model fitting."
         )
 
-        # Fit the model only on the training data.
+        
         evaluation_model = train_model(train_df)
 
-        # Evaluate the ML detector on unseen test records.
+        
         ml_test_results = predict_anomalies(
             evaluation_model, test_df
         )
 
-        # Apply rules to the same held-out records.
+        
         rule_test_results = apply_fraud_rules(ml_test_results)
 
         combined_test_results = add_combined_risk(
@@ -213,14 +212,9 @@ else:
     )
 
 
-# --------------------------------------------------
-# FULL-DATA RISK ANALYSIS
-# --------------------------------------------------
 st.header("Risk Detection")
 
 try:
-    # Fit a fresh model for analysis of all valid uploaded rows.
-    # Evaluation metrics above use a separate held-out test set.
     full_model = train_model(valid_df)
 
     full_ml_results = predict_anomalies(full_model, valid_df)
@@ -232,9 +226,6 @@ except Exception as error:
     st.stop()
 
 
-# --------------------------------------------------
-# DASHBOARD METRICS
-# --------------------------------------------------
 total_transactions = len(results)
 flagged_count = int(results["review_flag"].sum())
 high_risk_count = int((results["risk_level"] == "High").sum())
@@ -250,10 +241,6 @@ st.caption(
     "calibrated probabilities or confirmation of fraud."
 )
 
-
-# --------------------------------------------------
-# RISK DISTRIBUTION
-# --------------------------------------------------
 st.subheader("Risk Distribution")
 
 risk_order = ["Low", "Medium", "High"]
@@ -279,10 +266,6 @@ st.dataframe(
     hide_index=True,
 )
 
-
-# --------------------------------------------------
-# TRANSACTION RESULTS
-# --------------------------------------------------
 st.header("Transaction Results")
 
 display_columns = [
@@ -300,7 +283,7 @@ display_columns = [
     "review_flag",
 ]
 
-# Show the ground-truth label for analysis when present.
+
 if "is_fraud" in results.columns:
     display_columns.insert(4, "is_fraud")
 
@@ -341,10 +324,6 @@ st.dataframe(
     hide_index=True,
 )
 
-
-# --------------------------------------------------
-# SUSPICIOUS TRANSACTION REPORT
-# --------------------------------------------------
 st.header("Suspicious Transaction Report")
 
 suspicious_df = results[results["review_flag"]].copy()
@@ -397,9 +376,6 @@ st.download_button(
 )
 
 
-# --------------------------------------------------
-# FOOTER
-# --------------------------------------------------
 st.divider()
 
 st.caption(
